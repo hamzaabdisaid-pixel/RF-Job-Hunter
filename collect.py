@@ -6,14 +6,14 @@ ID=os.getenv("ADZUNA_APP_ID")
 if not KEY or not ID:
     raise SystemExit("ADZUNA_APP_ID and ADZUNA_APP_KEY are required; existing data preserved.")
 terms=["ingénieur radiofréquence","ingénieur RF","ingénieur hyperfréquence","ingénieur test RF","ingénieur antennes","ingénieur CEM","ingénieur télécommunications RF"]
-defense=re.compile(r"\\b(défense|defense|militaire|armement|missile|radar militaire|naval group|dga|armée|armee|thales six|mbda|safran electronics & defense)\\b",re.I)
+defense=re.compile(r"\b(défense|defense|militaire|armement|missile|radar militaire|naval group|dga|armée|armee|thales six|mbda|safran electronics & defense)\b",re.I)
 def years(text):
     t=text.lower()
-    m=re.search(r"(\\d+)\\s*(?:à|a|[-–])\\s*(\\d+)\\s*ans",t)
+    m=re.search(r"(\d+)\s*(?:à|a|[-–])\s*(\d+)\s*ans",t)
     if m:return int(m.group(1))
-    m=re.search(r"(?:minimum|min\\.?|au moins|dès|de)\\s*(\\d+)\\s*ans",t)
+    m=re.search(r"(?:minimum|min\.?|au moins|dès|de)\s*(\d+)\s*ans",t)
     if m:return int(m.group(1))
-    m=re.search(r"(\\d+)\\s*ans?\\s*(?:d.experience|d.expérience|minimum)",t)
+    m=re.search(r"(\d+)\s*ans?\s*(?:d.experience|d.expérience|minimum)",t)
     if m:return int(m.group(1))
     return None
 found={}
@@ -44,5 +44,5 @@ if OUT.exists():
     except (ValueError,KeyError):pass
 new_ids=set(found)-set(previous)
 ordered=sorted(found.values(),key=lambda j:j.get("posted",""),reverse=True)
-OUT.write_text(json.dumps({"updated_at":datetime.datetime.now(datetime.timezone.utc).isoformat(),"source":"Adzuna API — not direct LinkedIn/Apec/Hellowork/Indeed access","new_count":len(new_ids),"jobs":ordered},ensure_ascii=False,indent=2)+"\\n")
+OUT.write_text(json.dumps({"updated_at":datetime.datetime.now(datetime.timezone.utc).isoformat(),"source":"Adzuna API — not direct LinkedIn/Apec/Hellowork/Indeed access","new_count":len(new_ids),"jobs":ordered},ensure_ascii=False,indent=2)+"\n")
 print(f"Collected {len(ordered)} real listings; {len(new_ids)} new.")
